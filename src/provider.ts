@@ -5,26 +5,14 @@ import { payloadId } from './utils';
 
 abstract class BasicProvider extends EventEmitter {
   private _connected = false;
-  private connection: IRpcConnection;
+  public connection: IRpcConnection;
 
   constructor(connection: IRpcConnection) {
     super();
     this.connection = connection;
   }
 
-  public async enable(): Promise<any> {
-    try {
-      if (!this.connected) {
-        await this.open();
-      }
-      this.emit('enable');
-      return;
-    } catch (err) {
-      this.connected = false;
-      this.connection.close();
-      throw err;
-    }
-  }
+  abstract async enable(...opts: any | undefined): Promise<any>;
 
   set connected(value: boolean) {
     this._connected = value;
