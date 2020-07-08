@@ -57,12 +57,21 @@ abstract class BasicProvider extends EventEmitter {
   }
 
   public async send(method: string, params: any = {}): Promise<any> {
-    return this.connection.send({
+    const res = await this.connection.send({
       id: payloadId(),
       jsonrpc: '2.0',
       method,
       params,
     });
+    if (res.result) {
+      return res.result;
+    } else {
+      if (res.error && res.error.message) {
+        throw new Error(res.error.message);
+      } else {
+        throw new Error(`Failed JSON-RPC request with method: ${method}`);
+      }
+    }
   }
 }
 
