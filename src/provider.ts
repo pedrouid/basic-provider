@@ -10,6 +10,9 @@ abstract class BasicProvider extends EventEmitter {
   constructor(connection: IRpcConnection) {
     super();
     this.connection = connection;
+    if (this.connection.connected) {
+      this.connected = true;
+    }
   }
 
   abstract async enable(...opts: any | undefined): Promise<any>;
@@ -17,9 +20,11 @@ abstract class BasicProvider extends EventEmitter {
   set connected(value: boolean) {
     this._connected = value;
     if (value === true) {
+      this.emit('open');
       this.emit('connect');
     } else {
       this.emit('close');
+      this.emit('disconnect');
     }
   }
 
@@ -28,8 +33,11 @@ abstract class BasicProvider extends EventEmitter {
   }
 
   public open(): Promise<void> {
+    if (this.connected) {
+      return Promise.resolve();
+    }
     return new Promise((resolve, reject) => {
-      this.connection.on('close', () => {
+      this.connection.on('disconnect', () => {
         this.connected = false;
         reject();
       });
