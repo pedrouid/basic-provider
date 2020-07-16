@@ -15,7 +15,7 @@ abstract class BasicProvider extends EventEmitter {
     }
   }
 
-  abstract async enable(...opts: any | undefined): Promise<any>;
+  abstract async enable<T>(...opts: any | undefined): Promise<T>;
 
   set connected(value: boolean) {
     this._connected = value;
@@ -56,12 +56,15 @@ abstract class BasicProvider extends EventEmitter {
     return this.connection.close();
   }
 
-  public async send(method: string, params: any = {}): Promise<any> {
+  public async send<Result = any, Params = any>(
+    method: string,
+    params: Params
+  ): Promise<Result> {
     const result = await this.connection.send({
       id: payloadId(),
       jsonrpc: '2.0',
       method,
-      params,
+      params: params || {},
     });
     return result;
   }
