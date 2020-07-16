@@ -15,7 +15,7 @@ abstract class BasicProvider extends EventEmitter {
     }
   }
 
-  abstract async enable<T>(...opts: any | undefined): Promise<T>;
+  abstract async enable(...opts: any | undefined): Promise<any>;
 
   set connected(value: boolean) {
     this._connected = value;
