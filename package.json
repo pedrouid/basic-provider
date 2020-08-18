@@ -1,7 +1,7 @@
 {
   "name": "basic-provider",
   "description": "Basic Provider Library",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "author": "Pedro Gomes <github.com/pedrouid>",
   "license": "MIT",
   "keywords": [
