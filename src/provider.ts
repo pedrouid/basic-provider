@@ -1,9 +1,9 @@
 import EventEmitter from 'eventemitter3';
 
-import { IRpcConnection } from './interfaces';
+import { IRpcConnection, RequestParams } from './interfaces';
 import { payloadId } from './utils';
 
-abstract class BasicProvider extends EventEmitter {
+abstract class BasicProvider extends EventEmitter<string> {
   private _connected = false;
   public connection: IRpcConnection;
 
@@ -54,6 +54,17 @@ abstract class BasicProvider extends EventEmitter {
   public close(): Promise<void> {
     this.connected = false;
     return this.connection.close();
+  }
+
+  public async request<Result = any, Params = any>(
+    params: RequestParams<Params>
+  ): Promise<Result> {
+    const result = await this.connection.send({
+      ...params,
+      id: payloadId(),
+      jsonrpc: '2.0',
+    });
+    return result;
   }
 
   public async send<Result = any, Params = any>(
